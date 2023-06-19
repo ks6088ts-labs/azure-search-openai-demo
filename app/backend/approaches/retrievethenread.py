@@ -50,6 +50,7 @@ Answer:
         top = overrides.get("top") or 3
         exclude_category = overrides.get("exclude_category") or None
         filter = "category ne '{}'".format(exclude_category.replace("'", "''")) if exclude_category else None
+        access_token = overrides.get("access_token") or ""
 
         if overrides.get("semantic_ranker"):
             r = self.search_client.search(q, 
@@ -75,6 +76,8 @@ Answer:
             temperature=overrides.get("temperature") or 0.3, 
             max_tokens=1024, 
             n=1, 
-            stop=["\n"])
+            stop=["\n"],
+            headers={"Authorization": f"{access_token}"},
+        )
 
         return {"data_points": results, "answer": completion.choices[0].text, "thoughts": f"Question:<br>{q}<br><br>Prompt:<br>" + prompt.replace('\n', '<br>')}

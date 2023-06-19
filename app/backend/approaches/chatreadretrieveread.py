@@ -63,7 +63,9 @@ Search query:
             temperature=0.0, 
             max_tokens=32, 
             n=1, 
-            stop=["\n"])
+            stop=["\n"],
+            headers={"Authorization": f"{access_token}"},
+        )
         q = completion.choices[0].text
 
         # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
@@ -102,7 +104,9 @@ Search query:
             temperature=overrides.get("temperature") or 0.7, 
             max_tokens=1024, 
             n=1, 
-            stop=["<|im_end|>", "<|im_start|>"])
+            stop=["<|im_end|>", "<|im_start|>"],
+            headers={"Authorization": f"{access_token}"},
+        )
 
         return {"data_points": results, "answer": completion.choices[0].text, "thoughts": f"Searched for:<br>{q}<br><br>Prompt:<br>" + prompt.replace('\n', '<br>')}
     
