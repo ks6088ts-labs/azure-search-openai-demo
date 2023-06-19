@@ -34,7 +34,7 @@ const Chat = () => {
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
     const [answers, setAnswers] = useState<[user: string, response: AskResponse][]>([]);
 
-    const [accessToken, setAccessToken] = useState<AccessToken>();
+    const [accessToken, setAccessToken] = useState<string>();
 
     const makeApiRequest = async (question: string) => {
         lastQuestionRef.current = question;
@@ -55,8 +55,9 @@ const Chat = () => {
                     top: retrieveCount,
                     semanticRanker: useSemanticRanker,
                     semanticCaptions: useSemanticCaptions,
-                    suggestFollowupQuestions: useSuggestFollowupQuestions
-                }
+                    suggestFollowupQuestions: useSuggestFollowupQuestions,
+                    accessToken: accessToken,
+                },
             };
             const result = await chatApi(request);
             setAnswers([...answers, [question, result]]);
@@ -78,11 +79,11 @@ const Chat = () => {
     const makeAccessTokenRequest = async () => {
         try {
             const token = await getAccessToken();
-            setAccessToken(token[0]);
+            setAccessToken(token[0].access_token);
         } catch (e) {
             setError(e);
         } finally {
-            console.log(`current access token : "${accessToken?.access_token}"`)
+            console.log(`current access token : "${accessToken}"`)
         }
     }
 

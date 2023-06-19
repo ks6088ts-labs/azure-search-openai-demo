@@ -14,6 +14,7 @@ export type AskRequestOverrides = {
     promptTemplatePrefix?: string;
     promptTemplateSuffix?: string;
     suggestFollowupQuestions?: boolean;
+    accessToken?: string;
 };
 
 export type AskRequest = {
@@ -38,7 +39,6 @@ export type ChatRequest = {
     history: ChatTurn[];
     approach: Approaches;
     overrides?: AskRequestOverrides;
-    accessToken?: string;
 };
 
 export type Claim = {

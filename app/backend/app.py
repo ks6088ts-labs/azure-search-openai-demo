@@ -109,6 +109,92 @@ def chat():
         logging.exception("Exception in /chat")
         return jsonify({"error": str(e)}), 500
 
+@app.route("/.auth/me", methods=["GET"])
+def access_token():
+    return jsonify([
+        {
+            "access_token":"your-access-token",
+            "expires_on":"2023-06-19T06:33:27.7154686Z",
+            "id_token":"your-id-token",
+            "provider_name":"aad",
+            "user_claims": [
+                {
+                    "typ":"aud",
+                    "val":"uuid"
+                },
+                {
+                    "typ":"iss",
+                    "val":"https:\/\/login.microsoftonline.com\/uuid\/v2.0"
+                },
+                {
+                    "typ":"iat",
+                    "val":"1687151373"
+                },
+                {
+                    "typ":"nbf",
+                    "val":"1687151373"
+                },
+                {
+                    "typ":"exp",
+                    "val":"1687155273"
+                },
+                {
+                    "typ":"aio",
+                    "val":"blabla"
+                },
+                {
+                    "typ":"c_hash",
+                    "val":"blabla"
+                },
+                {
+                    "typ":"cc",
+                    "val":"blabla"
+                },
+                {
+                    "typ":"http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/emailaddress",
+                    "val":"admin@hello.onmicrosoft.com"
+                },
+                {
+                    "typ":"name",
+                    "val":"admin"
+                },
+                {
+                    "typ":"nonce",
+                    "val":"blabla"
+                },
+                {
+                    "typ":"http:\/\/schemas.microsoft.com\/identity\/claims\/objectidentifier",
+                    "val":"uuid"
+                },
+                {
+                    "typ":"preferred_username",
+                    "val":"my_preferred_username"
+                },
+                {
+                    "typ":"rh",
+                    "val":"hello"
+                },
+                {
+                    "typ":"http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/nameidentifier",
+                    "val":"hello"
+                },
+                {
+                    "typ":"http:\/\/schemas.microsoft.com\/identity\/claims\/tenantid",
+                    "val":"uuid"
+                },
+                {
+                    "typ":"uti",
+                    "val":"uuid"
+                },
+                {
+                    "typ":"ver",
+                    "val":"2.0"
+                }
+            ],
+            "user_id":"admin@hello.onmicrosoft.com"
+        },
+    ])
+
 def ensure_openai_token():
     pass
     # global openai_token
