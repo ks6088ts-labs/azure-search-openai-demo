@@ -4,7 +4,7 @@ import { SparkleFilled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
 
-import { chatApi, Approaches, AskResponse, ChatRequest, ChatTurn, getAccessToken, AccessToken } from "../../api";
+import { chatApi, Approaches, AskResponse, ChatRequest, ChatTurn, getAccessToken, refreshToken } from "../../api";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
@@ -78,8 +78,14 @@ const Chat = () => {
 
     const makeAccessTokenRequest = async () => {
         try {
-            const token = await getAccessToken();
-            setAccessToken(token[0].access_token);
+            var tokens = await getAccessToken();
+            const expireDate = Date.parse(tokens[0].expires_on);
+            if (expireDate < Date.now()) {
+                console.log("Token expired, refreshing");
+                await refreshToken();
+                tokens = await getAccessToken();
+            }
+            setAccessToken(tokens[0].access_token);
         } catch (e) {
             setError(e);
         } finally {
