@@ -4,7 +4,7 @@ import { SparkleFilled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
 
-import { chatApi, Approaches, AskResponse, ChatRequest, ChatTurn, getAccessToken, AccessToken } from "../../api";
+import { chatApi, Approaches, AskResponse, ChatRequest, ChatTurn, getAccessToken, refreshToken } from "../../api";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
@@ -34,7 +34,7 @@ const Chat = () => {
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
     const [answers, setAnswers] = useState<[user: string, response: AskResponse][]>([]);
 
-    const [accessToken, setAccessToken] = useState<AccessToken>();
+    const [accessToken, setAccessToken] = useState<string>();
 
     const makeApiRequest = async (question: string) => {
         lastQuestionRef.current = question;
@@ -55,8 +55,9 @@ const Chat = () => {
                     top: retrieveCount,
                     semanticRanker: useSemanticRanker,
                     semanticCaptions: useSemanticCaptions,
-                    suggestFollowupQuestions: useSuggestFollowupQuestions
-                }
+                    suggestFollowupQuestions: useSuggestFollowupQuestions,
+                    accessToken: accessToken,
+                },
             };
             const result = await chatApi(request);
             setAnswers([...answers, [question, result]]);
@@ -77,12 +78,18 @@ const Chat = () => {
 
     const makeAccessTokenRequest = async () => {
         try {
-            const token = await getAccessToken();
-            setAccessToken(token[0]);
+            var tokens = await getAccessToken();
+            const expireDate = Date.parse(tokens[0].expires_on);
+            if (expireDate < Date.now()) {
+                console.log("Token expired, refreshing");
+                await refreshToken();
+                tokens = await getAccessToken();
+            }
+            setAccessToken(tokens[0].access_token);
         } catch (e) {
             setError(e);
         } finally {
-            console.log(`current access token : "${accessToken?.access_token}"`)
+            console.log(`current access token : "${accessToken}"`)
         }
     }
 

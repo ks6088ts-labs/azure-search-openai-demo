@@ -53,6 +53,7 @@ Search query:
         top = overrides.get("top") or 3
         exclude_category = overrides.get("exclude_category") or None
         filter = "category ne '{}'".format(exclude_category.replace("'", "''")) if exclude_category else None
+        access_token = overrides.get("access_token") or ""
 
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
         prompt = self.query_prompt_template.format(chat_history=self.get_chat_history_as_text(history, include_last_turn=False), question=history[-1]["user"])
@@ -62,7 +63,9 @@ Search query:
             temperature=0.0, 
             max_tokens=32, 
             n=1, 
-            stop=["\n"])
+            stop=["\n"],
+            headers={"Authorization": f"{access_token}"},
+        )
         q = completion.choices[0].text
 
         # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
@@ -101,7 +104,9 @@ Search query:
             temperature=overrides.get("temperature") or 0.7, 
             max_tokens=1024, 
             n=1, 
-            stop=["<|im_end|>", "<|im_start|>"])
+            stop=["<|im_end|>", "<|im_start|>"],
+            headers={"Authorization": f"{access_token}"},
+        )
 
         return {"data_points": results, "answer": completion.choices[0].text, "thoughts": f"Searched for:<br>{q}<br><br>Prompt:<br>" + prompt.replace('\n', '<br>')}
     
