@@ -1,3 +1,5 @@
+[![release](https://github.com/ks6088ts-labs/azure-search-openai-demo/actions/workflows/release.yml/badge.svg)](https://github.com/ks6088ts-labs/azure-search-openai-demo/actions/workflows/release.yml)
+
 # ChatGPT + Enterprise data with Azure OpenAI and Cognitive Search
 
 [![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=599293758&machine=standardLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json&location=WestUs2)
