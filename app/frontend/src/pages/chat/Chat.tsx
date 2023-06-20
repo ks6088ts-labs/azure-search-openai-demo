@@ -56,8 +56,8 @@ const Chat = () => {
                     semanticRanker: useSemanticRanker,
                     semanticCaptions: useSemanticCaptions,
                     suggestFollowupQuestions: useSuggestFollowupQuestions,
-                    accessToken: accessToken,
-                },
+                    accessToken: accessToken
+                }
             };
             const result = await chatApi(request);
             setAnswers([...answers, [question, result]]);
@@ -89,9 +89,9 @@ const Chat = () => {
         } catch (e) {
             setError(e);
         } finally {
-            console.log(`current access token : "${accessToken}"`)
+            console.log(`current access token : "${accessToken}"`);
         }
-    }
+    };
 
     useEffect(() => {
         chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
@@ -160,7 +160,7 @@ const Chat = () => {
                             <SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" />
                             <h1 className={styles.chatEmptyStateTitle}>Chat with your data</h1>
                             <h2 className={styles.chatEmptyStateSubtitle}>Ask anything or try an example</h2>
-                            <ExampleList onExampleClicked={onExampleClicked} />
+                            {/* <ExampleList onExampleClicked={onExampleClicked} /> */}
                         </div>
                     ) : (
                         <div className={styles.chatMessageStream}>
