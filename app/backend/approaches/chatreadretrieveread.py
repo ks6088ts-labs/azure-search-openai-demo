@@ -25,11 +25,7 @@ Sources:
     Try not to repeat questions that have already been asked.
     Only generate questions and do not generate any text before or after the questions, such as 'Next Questions'""")
 
-    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about employee healthcare plans and the employee handbook.
-    Generate a search query based on the conversation and the new question. 
-    Do not include cited source filenames and document names e.g info.txt or doc.pdf in the search query terms.
-    Do not include any text inside [] or <<>> in the search query terms.
-    If the question is not in English, translate the question to English before generating the search query.
+    query_prompt_template = """{env_query_prompt_template}
 
 Chat History:
 {chat_history}
@@ -55,7 +51,12 @@ Search query:
         access_token = overrides.get("access_token") or ""
 
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
-        prompt = self.query_prompt_template.format(chat_history=self.get_chat_history_as_text(history, include_last_turn=False), question=history[-1]["user"])
+        env_query_prompt_template = os.getenv("ENV_QUERY_PROMPT_TEMPLATE", """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about employee healthcare plans and the employee handbook.
+    Generate a search query based on the conversation and the new question. 
+    Do not include cited source filenames and document names e.g info.txt or doc.pdf in the search query terms.
+    Do not include any text inside [] or <<>> in the search query terms.
+    If the question is not in English, translate the question to English before generating the search query.""")
+        prompt = self.query_prompt_template.format(chat_history=self.get_chat_history_as_text(history, include_last_turn=False), question=history[-1]["user"], env_query_prompt_template=env_query_prompt_template)
         completion = openai.Completion.create(
             engine=self.gpt_deployment, 
             prompt=prompt, 
