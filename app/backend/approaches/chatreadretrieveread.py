@@ -49,6 +49,7 @@ Search query:
 Answer ONLY with the facts listed in the list of sources below. If there isn't enough information below, say you don't know. Do not generate answers that don't use the sources below. If asking a clarifying question to the user would help, ask the question.
 For tabular information return it as an html table. Do not return markdown format.
 Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brakets to reference the source, e.g. [info1.txt]. Don't combine sources, list each source separately, e.g. [info1.txt][info2.pdf].""")
+        self.env_query_language = os.getenv("ENV_QUERY_LANGUAGE", "en-us")
 
     def run(self, history: list[dict], overrides: dict) -> any:
         use_semantic_captions = True if overrides.get("semantic_captions") else False
@@ -75,7 +76,7 @@ Each source has a name followed by colon and the actual information, always incl
             r = self.search_client.search(q, 
                                           filter=filter,
                                           query_type=QueryType.SEMANTIC, 
-                                          query_language="en-us", 
+                                          query_language=self.env_query_language, 
                                           query_speller="lexicon", 
                                           semantic_configuration_name="default", 
                                           top=top, 
