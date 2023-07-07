@@ -50,6 +50,7 @@ Answer ONLY with the facts listed in the list of sources below. If there isn't e
 For tabular information return it as an html table. Do not return markdown format.
 Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brakets to reference the source, e.g. [info1.txt]. Don't combine sources, list each source separately, e.g. [info1.txt][info2.pdf].""")
         self.env_query_language = os.getenv("ENV_QUERY_LANGUAGE", "en-us")
+        self.env_query_speller = os.getenv("ENV_QUERY_SPELLER", "lexicon")
 
     def run(self, history: list[dict], overrides: dict) -> any:
         use_semantic_captions = True if overrides.get("semantic_captions") else False
@@ -77,7 +78,7 @@ Each source has a name followed by colon and the actual information, always incl
                                           filter=filter,
                                           query_type=QueryType.SEMANTIC, 
                                           query_language=self.env_query_language, 
-                                          query_speller="lexicon", 
+                                          query_speller=self.env_query_speller, 
                                           semantic_configuration_name="default", 
                                           top=top, 
                                           query_caption="extractive|highlight-false" if use_semantic_captions else None)
