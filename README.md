@@ -72,13 +72,22 @@ It will look like the following:
 #### Use existing resources:
 
 1. Run `azd env set AZURE_OPENAI_SERVICE {Name of existing OpenAI service}`
-1. Run `azd env set AZURE_OPENAI_API_BASE {Name of existing OpenAI API endpoint, if you use API Management}`
 1. Run `azd env set AZURE_OPENAI_RESOURCE_GROUP {Name of existing resource group that OpenAI service is provisioned to}`
 1. Run `azd env set AZURE_OPENAI_CHATGPT_DEPLOYMENT {Name of existing ChatGPT deployment}`. Only needed if your ChatGPT deployment is not the default 'chat'.
 1. Run `azd env set AZURE_OPENAI_GPT_DEPLOYMENT {Name of existing GPT deployment}`. Only needed if your ChatGPT deployment is not the default 'davinci'.
 1. Run `azd up`
 
 > NOTE: You can also use existing Search and Storage Accounts.  See `./infra/main.parameters.json` for list of environment variables to pass to `azd env set` to configure those existing resources.
+
+#### Use existing APIM
+
+1. Run `azd env set AZURE_OPENAI_API_BASE {Name of existing OpenAI API endpoint, if you use API Management}`, e.g. `"https://easyauth-apim.azure-api.net"`
+
+#### Use Japanese for Cognitive Search index
+
+1. Run `azd env set ANALYZER_NAME "ja.microsoft"`
+1. Run `azd env set ENV_QUERY_LANGUAGE "ja-jp"`
+1. Run `azd env set ENV_QUERY_SPELLER "none"`
 
 #### Deploying or re-deploying a local clone of the repo:
 * Simply run `azd up`
