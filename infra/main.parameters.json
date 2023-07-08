@@ -46,6 +46,24 @@
     },
     "storageResourceGroupName": {
       "value": "${AZURE_STORAGE_RESOURCE_GROUP}"
+    },
+    "envQueryPromptTemplate": {
+      "value": "${ENV_QUERY_PROMPT_TEMPLATE}"
+    },
+    "envFollowUpQuestionsPromptContent": {
+      "value": "${ENV_FOLLOW_UP_QUESTIONS_PROMPT_CONTENT}"
+    },
+    "envPromptPrefix": {
+      "value": "${ENV_PROMPT_PREFIX}"
+    },
+    "envQueryLanguage": {
+      "value": "${ENV_QUERY_LANGUAGE}"
+    },
+    "envQuerySpeller": {
+      "value": "${ENV_QUERY_SPELLER}"
+    },
+    "analyzerName": {
+      "value": "${ANALYZER_NAME}"
     }
   }
 }

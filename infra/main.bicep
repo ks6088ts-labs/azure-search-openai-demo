@@ -38,13 +38,18 @@ param formRecognizerResourceGroupLocation string = location
 
 param formRecognizerSkuName string = 'S0'
 
-param gptDeploymentName string = 'davinci'
-param gptModelName string = 'text-davinci-003'
 param chatGptDeploymentName string = 'chat'
 param chatGptModelName string = 'gpt-35-turbo'
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
+
+param envQueryPromptTemplate string = '"""Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about employee healthcare plans and the employee handbook. Generate a search query based on the conversation and the new question.  Do not include cited source filenames and document names e.g info.txt or doc.pdf in the search query terms. Do not include any text inside [] or <<>> in the search query terms. If the question is not in English, translate the question to English before generating the search query."""'
+param envFollowUpQuestionsPromptContent string = '"""Generate three very brief follow-up questions that the user would likely ask next about their healthcare plan and employee handbook. Use double angle brackets to reference the questions, e.g. <<Are there exclusions for prescriptions?>>. Try not to repeat questions that have already been asked. Only generate questions and do not generate any text before or after the questions, such as \'Next Questions\'"""'
+param envPromptPrefix string = 'Assistant helps the company employees with their healthcare plan questions, and questions about the employee handbook. Be brief in your answers. Answer ONLY with the facts listed in the list of sources below. If there isn\'t enough information below, say you don\'t know. Do not generate answers that don\'t use the sources below. If asking a clarifying question to the user would help, ask the question. For tabular information return it as an html table. Do not return markdown format. Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brakets to reference the source, e.g. [info1.txt]. Don\'t combine sources, list each source separately, e.g. [info1.txt][info2.pdf].'
+param envQueryLanguage string = 'en-us'
+param envQuerySpeller string = 'lexicon'
+param analyzerName string = 'en.microsoft'
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -108,9 +113,14 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_OPENAI_SERVICE: openAi.outputs.name
       AZURE_SEARCH_INDEX: searchIndexName
       AZURE_SEARCH_SERVICE: searchService.outputs.name
-      AZURE_OPENAI_GPT_DEPLOYMENT: gptDeploymentName
+      AZURE_OPENAI_GPT_DEPLOYMENT: chatGptDeploymentName
       AZURE_OPENAI_CHATGPT_DEPLOYMENT: chatGptDeploymentName
       AZURE_OPENAI_API_BASE: openAiApiBase
+      ENV_QUERY_PROMPT_TEMPLATE: envQueryPromptTemplate
+      ENV_FOLLOW_UP_QUESTIONS_PROMPT_CONTENT: envFollowUpQuestionsPromptContent
+      ENV_PROMPT_PREFIX: envPromptPrefix
+      ENV_QUERY_LANGUAGE: envQueryLanguage
+      ENV_QUERY_SPELLER: envQuerySpeller
     }
   }
 }
@@ -126,17 +136,6 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
       name: openAiSkuName
     }
     deployments: [
-      {
-        name: gptDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: gptModelName
-          version: '1'
-        }
-        scaleSettings: {
-          scaleType: 'Standard'
-        }
-      }
       {
         name: chatGptDeploymentName
         model: {
@@ -317,7 +316,7 @@ output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
 output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
-output AZURE_OPENAI_GPT_DEPLOYMENT string = gptDeploymentName
+output AZURE_OPENAI_GPT_DEPLOYMENT string = chatGptDeploymentName
 output AZURE_OPENAI_CHATGPT_DEPLOYMENT string = chatGptDeploymentName
 output AZURE_OPENAI_API_BASE string = openAiApiBase
 
@@ -333,3 +332,5 @@ output AZURE_STORAGE_CONTAINER string = storageContainerName
 output AZURE_STORAGE_RESOURCE_GROUP string = storageResourceGroup.name
 
 output BACKEND_URI string = backend.outputs.uri
+
+output ANALYZER_NAME string = analyzerName
